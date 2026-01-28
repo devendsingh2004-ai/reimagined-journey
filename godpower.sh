@@ -1,15 +1,20 @@
-echo '🌟 Activating GODPOWER Station...'
+#!/bin/bash
+echo "🌟 Igniting GODPOWER Station..."
 vncserver -kill :1 || true
 rm -rf /tmp/.X1* || true
-vncserver :1 -geometry 1280x720
+# Start VNC with no password and proper security settings
+vncserver :1 -geometry 1280x720 -SecurityTypes None
 export DISPLAY=:1
 autocutsel -s CLIPBOARD -fork
-xfce4-panel -r && xfwm4 --replace &
 
-echo '💾 Backing up your Vault (codespaces-blank) to GitHub...'
+# Wait for services to stabilize
+sleep 5
+xfce4-panel --restart >/dev/null 2>&1 &
+
+echo "💾 Syncing Vault to GitHub..."
 cd /workspaces/codespaces-blank
 git add .
-git commit -m 'Auto-save Godpower Station' || echo 'No new changes to save.'
-git push -u origin main || echo 'Push failed, but files are saved locally.'
+git commit -m "Auto-save" || echo "Nothing new."
+git push -q origin main || echo "Cloud sync paused."
 
-echo '✅ Station Online. Everything is backed up and safe.'
+echo "✅ Ready! Open VNC and dominate."
